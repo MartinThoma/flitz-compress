@@ -1,4 +1,4 @@
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 
 from flitz.context_menu import ContextMenuItem
 
@@ -29,9 +29,13 @@ def compress_selection(selection: list[Path]):
         for path in selection:
             archive.write(path, path.name)
 
+def is_active(selection: list[Path]) -> bool:
+    return len(selection) > 0
+
 context_menu_item = ContextMenuItem(
     name = "COMPRESS",
     label="Compress selection",
     action=compress_selection,
+    is_active=is_active,
 )
 
