@@ -1,6 +1,8 @@
 __version__ = "0.0.2"
 
 from flitz.context_menu import ContextMenuItem
+from flitz.events import current_folder_changed
+
 
 from pathlib import Path
 import zipfile
@@ -13,9 +15,8 @@ def get_target(path: Path, extension: str = "zip") -> Path:
     suffix = None
     while tmp_path.exists():
         if suffix is None:
-            suffix = 1
-        else:
-            suffix += 1
+            suffix = 0
+        suffix += 1
         tmp_path = path / f"archive-{suffix}.{extension}"
     return tmp_path
 
@@ -28,6 +29,7 @@ def compress_selection(selection: list[Path]):
     with zipfile.ZipFile(target, "w") as archive:
         for path in selection:
             archive.write(path, path.name)
+    current_folder_changed.produce()
 
 def is_active(selection: list[Path]) -> bool:
     return len(selection) > 0
